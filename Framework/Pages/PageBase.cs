@@ -1,13 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using TestFramework.General;
-using TestFramework.Tests;
-
 namespace TestFramework.Pages
 {
     abstract public class PageBase
@@ -15,13 +9,9 @@ namespace TestFramework.Pages
         public static IWebDriver driver { get => Drivers.dr; }// Ссылка на обьект драйвера в классе Driver
         public static string baseUrl { get => Drivers.baseUrlLocal; }// Ссылка на URL главной страницы maxi в классе Driver
         public static int Wtime { get => Drivers.Wt; }// Ссылка на переменную времени ожидания по умолчанию в классе Driver
-
-
         public string Url;
 
-        protected static int timeLoadPage = Wtime*3;
-        public PageBase() { }
-
+        protected static int timeLoadPage = Wtime * 3;
 
         /// <summary>
         /// Ищет на полностью загруженной странице веб элемент по сss селектору
@@ -71,12 +61,11 @@ namespace TestFramework.Pages
             return GeneralFunctions.WaitElement(driver, selector, time, cnd);
         }
 
-       
         /// <summary>
         /// Переходит на страницу указаную в поле URL класса страницы
         /// </summary>
         public void Navigate()
-        { 
+        {
             driver.Navigate().GoToUrl(Drivers.baseUrlLocal + Url);
             WaitPageFullLoaded();
         }
@@ -102,6 +91,5 @@ namespace TestFramework.Pages
                 return ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete");
             });
         }
-        
     }
 }

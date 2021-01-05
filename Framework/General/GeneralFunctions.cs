@@ -2,26 +2,18 @@
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using TestFramework.Pages;
-using TestFramework.Pages.Authorythation;
 
 namespace TestFramework.General
 {
     public delegate IWebElement Condition(IWebElement element);
     public delegate bool Check();
 
-
     class GeneralFunctions
     {
         public static IWebDriver driver { get => Drivers.dr; }// Ссылка на обьект драйвера в классе Driver
         public static int Wtime { get => Drivers.Wt; }// Ссылка на переменную времени ожидания по умолчанию в классе Driver
-
-
 
         /// <summary>
         /// Ищет на странице веб элемент по сss селектору
@@ -37,22 +29,20 @@ namespace TestFramework.General
             return wait.Until((x) =>
             {
                 IWebElement element = driver.FindElement(selector);
-                
+
                 return cnd(element);
             });
         }
-
 
         /// <summary>
         /// Проверяет что веб элемент существует, отображен на сайте и кликабельный
         /// </summary>
         /// <param name="element">веб элемент</param>
         /// <returns>при успехе - веб эемент, при провале - null</returns>
-        public static IWebElement ExistDisplayedEnabled(IWebElement element) 
-        { 
-            return (element != null && element.Displayed && element.Enabled) ? element : null; 
+        public static IWebElement ExistDisplayedEnabled(IWebElement element)
+        {
+            return (element != null && element.Displayed && element.Enabled) ? element : null;
         }
-
 
         /// <summary>
         /// Проверяет что веб элемент существует и отображен на сайте
@@ -96,7 +86,6 @@ namespace TestFramework.General
             return nspace;
         }
 
-
         /// <summary>
         /// Очищает текстовое поле и вписывает в него строку
         /// </summary>
@@ -106,7 +95,6 @@ namespace TestFramework.General
         {
             Actions actions = new Actions(driver);
             actions.Click(field).KeyDown(Keys.Control).SendKeys("a").KeyUp(Keys.Control).SendKeys(Keys.Delete).SendKeys(text).SendKeys(Keys.Enter).Build().Perform();
-
         }
 
         /// <summary>
@@ -118,16 +106,26 @@ namespace TestFramework.General
         public static void WaitDifferentText(By selector, string text, int time)
         {
             bool check = true;
-
             for (int i = 0; i < Wtime * 2; i++)
             {
                 new WebDriverWait(driver, TimeSpan.FromSeconds(time)).Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(selector));
+
                 IWebElement element = driver.FindElement(selector);
                 string elementText = element.Text;
-                if (elementText != text) { check = false; break; }
+
+                if (elementText != text)
+                {
+                    check = false;
+                    break;
+                }
+
                 Thread.Sleep(500);
             }
-            if (check) { throw new ArgumentException("text is same"); }
+
+            if (check)
+            {
+                throw new ArgumentException("text is same");
+            }
         }
 
         /// <summary>
@@ -139,14 +137,12 @@ namespace TestFramework.General
             try
             {
                 Apis.Authoryze().Wait();
-
             }
             catch (AggregateException ae)
             {
                 Console.WriteLine($"EXCEPTION: {ae.Message}");
             }
         }
-
 
         /// <summary>
         /// Проверяет что результат запроса не содержит сообщений об ошибках
@@ -160,7 +156,6 @@ namespace TestFramework.General
             return Status.Count == 0;
         }
 
-
         /// <summary>
         /// Проверяет что результат запроса содержит строку
         /// </summary>
@@ -173,7 +168,5 @@ namespace TestFramework.General
             MatchCollection Status = Regex.Matches(result, textSuccess);
             return Status.Count > 0;
         }
-
-       
     }
 }

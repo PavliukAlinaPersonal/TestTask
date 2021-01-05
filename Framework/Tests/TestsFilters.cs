@@ -6,11 +6,9 @@ using TestFramework.Tests;
 namespace TestFramework
 {
     [TestFixture(typeof(ChromeDriver))]
-    //[TestFixture(typeof(string))]
     [Category("Фильтры")]
     class TestsFilters<TBrowser> : TestBase<TBrowser> //Test Suite для проверки фильтров товаров
     {
-
         [Test]
         [Category("Alina Pavliuk"), Description("Товары отфильтрованы по производителю")]
         public void FilterProducts()
@@ -30,7 +28,6 @@ namespace TestFramework
             Assert.AreEqual(PProd.TextBoxCharacterType, characterName,
                 "Название производителя товара на странице товара равно названию выбранного производителя");
         }
-
 
         [Test]
         [Category("Alina Pavliuk"), Description("Товары отсортированы по убыванию цены")]
@@ -59,13 +56,9 @@ namespace TestFramework
 
             GeneralFunctions.CleanAndSendTextField(PProdGroup.TextBoxPriceRollSecond, price.ToString());//Введена цена второго товара на странице в поле ограничения максимальной цены
             GeneralFunctions.WaitDifferentText(PProdGroup.ButtonRollFilterActiveSelctor, text, Wtime);//Дождались изменения текста на иконке активного фильтра
-            
-            Assert.IsTrue(PProdGroup.TextProductPriceFirst == price, 
+
+            Assert.IsTrue(PProdGroup.TextProductPriceFirst == price,
                 "Цена первого товара на странице равна введеной в поля ограничения цене");
         }
-
-
     }
-
-
 }

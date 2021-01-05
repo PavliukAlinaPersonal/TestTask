@@ -1,16 +1,10 @@
-﻿using System;
+﻿using OpenQA.Selenium;
 using System.Collections.Generic;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Threading;
-using System.Linq;
 using TestFramework.Pages.Authorythation;
-using System.IO;
-using System.Text;
 
 namespace TestFramework.General
 {
@@ -21,14 +15,12 @@ namespace TestFramework.General
 
         public static string ResultAuthorization; //результат выполнения API запроса Авторизации
 
-
         /// <summary>
         /// Выполняет API запрос на авторизацию
         /// </summary>
         /// <returns></returns>
         public static async Task Authoryze()
         {
-
             driver.Navigate().GoToUrl(Drivers.baseUrlLocal);
             using var cl = new HttpClient();
 
@@ -36,17 +28,12 @@ namespace TestFramework.General
             var contents = await res.Content.ReadAsStringAsync();
 
             string resultString = Regex.Match(contents, @"name=""csrf-token"" content=""(.+?)""").Value;
-            string res1 = Regex.Match(resultString, @"content=""(.+?)""").Value;
-            string res2 = Regex.Match(res1, @"""(.+?)""").Value;
-            string res3 = Regex.Match(res2, @"(\w+)").Value;
-
+            string id = resultString.Replace(@"name=""csrf-token"" content=""", "").Replace(@"""", "");
 
             driver.Navigate().GoToUrl(Drivers.baseUrlLocal);
             var cook = driver.Manage().Cookies.AllCookies;
 
-
             using var client = new HttpClient(GetCockie());
-
 
             var values = new Dictionary<string, string>
             {
@@ -54,7 +41,7 @@ namespace TestFramework.General
                 { "AJAX", "Y" },
                 { "data", "auth"},
                 { "template", "" },
-                { "sessid", res3 },
+                { "sessid", id },
                 { "lang", "ru"},
                 { "AUTH_FORM", "Y" },
                 { "TYPE", "AUTH" },
@@ -67,7 +54,6 @@ namespace TestFramework.General
 
             var content = new FormUrlEncodedContent(values);
             var result = await client.PostAsync(@Drivers.baseUrl + "ajax.php", content);
-
 
             ResultAuthorization = await result.Content.ReadAsStringAsync();
             driver.Navigate().Refresh();
@@ -92,9 +78,6 @@ namespace TestFramework.General
             handler.CookieContainer = cookies;
 
             return handler;
-
         }
-
     }
-    
 }
